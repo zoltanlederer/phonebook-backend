@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator');
 
 const url = process.env.MONGODB_URI
 
@@ -12,9 +13,20 @@ mongoose.connect(url)
     })
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: Number
+    name: {
+        type: String, 
+        minLength: 3,
+        required: true,
+        unique: true,        
+    },
+    number: {
+        type: String,
+        minLength: 8,
+        required: true,        
+    }
 })
+
+personSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' });
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
